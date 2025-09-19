@@ -1,0 +1,196 @@
+package tr.gov.tubitak.mam.ee.ytbs.web.controller.yardim.login;
+
+import java.io.Serializable;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import lombok.Getter;
+import lombok.Setter;
+import tr.gov.tubitak.mam.ee.ytbs.web.util.KaynakDosyasi;
+
+@Named(value = "semaCizimBean")
+@SessionScoped
+@Getter
+@Setter
+public class SemaCizimBean implements Serializable {
+
+	private static final long serialVersionUID = 6714422428107570225L;
+
+	private JSONObject cizimNesnesi;
+
+	public SemaCizimBean() {
+		cizimNesnesi = sorgula();
+		//cizimNesnesi = oku();
+	}
+
+	public void yenile() {
+		System.out.println("yenile");
+	}
+
+	public void eklePanelAc() {
+		System.out.println("ekle");
+	}
+
+	private JSONObject sorgula() {
+	    JSONObject jsonObject = new JSONObject();
+
+	    JSONObject cizimYapisi = new JSONObject();
+	    cizimYapisi.put("genislik", 1000);
+	    cizimYapisi.put("uzunluk", 1000);
+	    jsonObject.put("cizimYapisi", cizimYapisi);
+
+	    JSONArray techizatListesi = new JSONArray();
+
+	    JSONObject bara1 = new JSONObject();
+	    bara1.put("techizat_turu", "BARA");
+	    bara1.put("techizat_id", 1);
+	    bara1.put("techizat_adi", "Bara 1");
+	    bara1.put("bar_tipi", "ANABARA");   // opsiyonel
+	    techizatListesi.put(bara1);
+
+	    JSONObject bara2 = new JSONObject();
+	    bara2.put("techizat_turu", "BARA");
+	    bara2.put("techizat_id", 2);
+	    bara2.put("techizat_adi", "Bara 2");
+	    bara2.put("bar_tipi", "ANABARA");
+	    techizatListesi.put(bara2);
+
+	    JSONObject bara3 = new JSONObject();
+	    bara3.put("techizat_turu", "BARA");
+	    bara3.put("techizat_id", 3);
+	    bara3.put("techizat_adi", "Bara 3");
+	    bara3.put("bar_tipi", "ANABARA");
+	    techizatListesi.put(bara3);
+
+	    JSONObject bara4 = new JSONObject();
+	    bara4.put("techizat_turu", "BARA");
+	    bara4.put("techizat_id", 4);
+	    bara4.put("techizat_adi", "Bara 4");
+	    bara4.put("bar_tipi", "URETIM_BARASI");
+	    techizatListesi.put(bara4);
+
+	    // ==== TRAFOLAR (toolbarda 2 adet görünsün) ====
+	    JSONObject trafo11 = new JSONObject();
+	    trafo11.put("techizat_turu", "TRAFO");
+	    trafo11.put("techizat_id", 11);
+	    trafo11.put("techizat_adi", "Trafo 11");
+	    trafo11.put("baslangic_bara_id", 1);
+	    trafo11.put("bitis_bara_id", 2);
+	    techizatListesi.put(trafo11);
+
+	    JSONObject trafo12 = new JSONObject();
+	    trafo12.put("techizat_turu", "TRAFO");
+	    trafo12.put("techizat_id", 12);
+	    trafo12.put("techizat_adi", "Trafo 12");
+	    trafo12.put("baslangic_bara_id", 3);
+	    trafo12.put("bitis_bara_id", 4);
+	    techizatListesi.put(trafo12);
+
+	    // ==== ANAHTARLAR (2 adet) ====
+	    JSONObject anahtar21 = new JSONObject();
+	    anahtar21.put("techizat_turu", "ANAHTAR");
+	    anahtar21.put("techizat_id", 21);
+	    anahtar21.put("techizat_adi", "Anahtar 21");
+	    anahtar21.put("baslangic_bara_id", 1);
+	    anahtar21.put("bitis_bara_id", 3);
+	    techizatListesi.put(anahtar21);
+
+	    JSONObject anahtar22 = new JSONObject();
+	    anahtar22.put("techizat_turu", "ANAHTAR");
+	    anahtar22.put("techizat_id", 22);
+	    anahtar22.put("techizat_adi", "Anahtar 22");
+	    anahtar22.put("baslangic_bara_id", 2);
+	    anahtar22.put("bitis_bara_id", 4);
+	    techizatListesi.put(anahtar22);
+
+	    // ==== SERİ KAPASİTÖRLER (2 adet) ====
+	    JSONObject sk31 = new JSONObject();
+	    sk31.put("techizat_turu", "SERI_KAPASITOR");
+	    sk31.put("techizat_id", 31);
+	    sk31.put("techizat_adi", "SK 31");
+	    sk31.put("baslangic_bara_id", 2);
+	    sk31.put("bitis_bara_id", 3);
+	    techizatListesi.put(sk31);
+
+	    JSONObject sk32 = new JSONObject();
+	    sk32.put("techizat_turu", "SERI_KAPASITOR");
+	    sk32.put("techizat_id", 32);
+	    sk32.put("techizat_adi", "SK 32");
+	    sk32.put("baslangic_bara_id", 3);
+	    sk32.put("bitis_bara_id", 4);
+	    techizatListesi.put(sk32);
+
+	    // ==== HATLAR (2 adet) ====
+	    JSONObject hat1 = new JSONObject();
+	    hat1.put("techizat_turu", "HAT");
+	    hat1.put("techizat_id", 41);
+	    hat1.put("techizat_adi", "Hat 41");
+	    hat1.put("baslangic_bara_id", 1);
+	    hat1.put("bitis_bara_id", 2);
+	    techizatListesi.put(hat1);
+
+	    JSONObject hat2 = new JSONObject();
+	    hat2.put("techizat_turu", "HAT");
+	    hat2.put("techizat_id", 42);
+	    hat2.put("techizat_adi", "Hat 42");
+	    hat2.put("baslangic_bara_id", 2);
+	    hat2.put("bitis_bara_id", 4);
+	    techizatListesi.put(hat2);
+
+	    // ==== TEK-BARALI EKİPMANLAR ====
+	    JSONObject unite = new JSONObject();
+	    unite.put("techizat_turu", "UNITE");
+	    unite.put("techizat_id", 101);
+	    unite.put("techizat_adi", "Ünite 101");
+	    unite.put("bara_id", 1);
+	    techizatListesi.put(unite);
+
+	    JSONObject depolama = new JSONObject();
+	    depolama.put("techizat_turu", "DEPOLAMA_UNITESI");
+	    depolama.put("techizat_id", 102);
+	    depolama.put("techizat_adi", "Depolama 102");
+	    depolama.put("bara_id", 2);
+	    techizatListesi.put(depolama);
+
+	    JSONObject lisanssiz = new JSONObject();
+	    lisanssiz.put("techizat_turu", "LISANSSIZ_SANTRAL");
+	    lisanssiz.put("techizat_id", 103);
+	    lisanssiz.put("techizat_adi", "Lisanssız 103");
+	    lisanssiz.put("bara_id", 3);
+	    techizatListesi.put(lisanssiz);
+
+	    JSONObject ulusBag = new JSONObject();
+	    ulusBag.put("techizat_turu", "ULUSLARARASI_BAGLANTI");
+	    ulusBag.put("techizat_id", 104);
+	    ulusBag.put("techizat_adi", "Interconn 104");
+	    ulusBag.put("bara_id", 4);
+	    techizatListesi.put(ulusBag);
+
+	    JSONObject yuk = new JSONObject();
+	    yuk.put("techizat_turu", "YUK");
+	    yuk.put("techizat_id", 105);
+	    yuk.put("techizat_adi", "Yük 105");
+	    yuk.put("bara_id", 2);
+	    techizatListesi.put(yuk);
+
+	    JSONObject icIhtiyac = new JSONObject();
+	    icIhtiyac.put("techizat_turu", "IC_IHTIYAC");
+	    icIhtiyac.put("techizat_id", 106);
+	    icIhtiyac.put("techizat_adi", "İç İhtiyaç 106");
+	    icIhtiyac.put("bara_id", 1);
+	    techizatListesi.put(icIhtiyac);
+
+	    jsonObject.put("techizat_listesi", techizatListesi);
+	    return jsonObject;
+	}
+
+
+	private JSONObject oku() {
+		String cizimAdana = KaynakDosyasi.kaynakDosyasiniOku("cizim_adana.json");
+		return new JSONObject(cizimAdana);
+	}
+
+}

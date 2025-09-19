@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="#{localeBean.language}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>YTBS</title>    
+   
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+    //<script src="https://unpkg.com/xstate@5/dist/xstate.umd.production.min.js"></script>
+    
+    <style>
+      body {
+        margin:0; height:100%; overflow:hidden;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:#fafafa;
+      }
+
+		html, body { height: 100%; margin: 0; }
+		/* BUNU BIRAK: sadece wrap konumlansın */
+		#stageWrap {
+		  position: absolute;
+		  top: 56px;
+		  left: 180px;
+		  right: 0;
+		  bottom: 0;
+		  background:#fff;
+		}
+		
+		/* #stage sadece kapsayıcıyı doldursun */
+		#stage {
+		  position: absolute;  /* veya relative */
+		  inset: 0;            /* top:0; left:0; right:0; bottom:0; eşdeğer */
+		  width: 100%;
+		  height: 100%;
+		  margin: 0;
+		  padding: 0;
+		  overflow: hidden;
+		  background: #fff;
+		}
+
+      
+      /* Sol menü */
+      #palette {
+        width:180px; background:#f5f5f5; border-right:1px solid #ddd;
+        height:100vh; overflow:auto; padding:12px; box-sizing:border-box;
+        position:fixed; left:0; top:56px;   z-index: 2000;   /* sahnenin önünde kalır */
+        
+      }
+		.tool-btn {
+		  display:block;
+		  width:100%;
+		  margin:6px 0;
+		  padding:10px;
+		  font-size:14px;
+		  font-weight:500;
+		  text-align:left;
+		  background:#fff;            /* beyaz arka plan */
+		  color:#333;                 /* koyu gri metin */
+		  border:1px solid #bbb;      /* gri kenarlık */
+		  border-radius:6px;
+		  cursor:pointer;
+		  transition: all .2s;
+		}
+		.tool-btn:hover {
+		  background:#f0f0f0;         /* hover’da hafif gri */
+		  border-color:#888;          /* kenarlık koyulaşır */
+		}
+
+      /* Üst bar */
+      #topbar {
+        position:fixed; top:0; left:180px; right:0;
+        height:56px; background:#fff; border-bottom:1px solid #ddd;
+        display:flex; align-items:center; justify-content:space-between;
+        padding:0 20px; box-sizing:border-box; z-index: 10;
+      }
+      #title {
+        font-size:18px; font-weight:600; color:#333;
+      }
+		.action-btn {
+		  margin-left:8px;
+		  padding:6px 14px;
+		  font-size:13px;
+		  border:1px solid #3498db;   /* mavi çerçeve */
+		  background:#fff;            /* beyaz zemin */
+		  color:#3498db;              /* mavi metin */
+		  border-radius:4px;
+		  cursor:pointer;
+		  transition:background .2s, color .2s;
+		}
+		.action-btn:hover {
+		  background:#3498db;
+		  color:#fff;
+		}
+		      
+
+		/* varsayılan kapalı; butonun yanında açacağız */
+		#baraMenu{
+		  position:absolute;
+		  display:none;
+		  background:#fff;
+		  border:1px solid #e5e7eb;
+		  border-radius:8px;
+		  padding:6px;
+		  box-shadow:0 8px 24px rgba(0,0,0,.12);
+		  z-index:9999;
+		}
+		#baraMenu .opt{
+		  padding:8px 10px;
+		  cursor:pointer;
+		  white-space:nowrap;
+		}
+		#baraMenu .opt:hover{ background:#f3f4f6; }
+
+		
+
+    </style>
+</h:head>
+
+<h:body>
+
+  <div id="palette">
+	<button id="btnBara" class="tool-btn">Bara</button>
+    <button id="btnHat" class="tool-btn">Hat</button>
+    <button id="btnTrafo" class="tool-btn">Trafo</button>
+    <button id="btnSwitch" class="tool-btn">Anahtar</button>
+    <button id="btnSeriKapasitor" class="tool-btn">Seri Kapasitör</button>
+    <button id="btnUnite" class="tool-btn">Ünite</button>
+    <button id="btnDepolama" class="tool-btn">Depolama</button>
+    <button id="btnSantral" class="tool-btn">Lisanssız Santral</button>
+    <button id="btnBaglanti" class="tool-btn">Uluslararası Bağlantı</button>
+    <button id="btnYuk" class="tool-btn">Yük</button>
+    <button id="btnIcIhtiyac" class="tool-btn">İç İhtiyaç</button>
+    <button id="btnText" class="tool-btn">Metin</button>
+    
+  </div>
+  
+  <div id="baraMenu">
+  <div class="opt" data-baratype="ANABARA">Ana Bara</div>
+  <div class="opt" data-baratype="URETIM_BARASI">Üretim Barası</div>
+  <div class="opt" data-baratype="JUNCTION">Bağlantı Noktası</div>
+</div>
+
+  <div id="topbar">
+    <div id="title">TRAFO MERKEZİ ŞEMALARI</div>
+    <div>
+      <button id="btnNew" class="action-btn btn-green">Yeni</button>
+      <button id="btnSave" class="action-btn btn-blue">Kaydet</button>
+      <button id="btnLoad" class="action-btn btn-grey">Yükle</button>
+      <button id="btnExport" class="action-btn btn-orange">Dışa Aktar</button>
+      <button id="btnImport" class="action-btn btn-orange">İçe Aktar</button>
+      <button id="btnModel" class="action-btn btn-purple">Modelden Yükle</button>
+      <input type="file" id="fileInput" style="display:none"/>
+      <input type="file" id="modelInput" style="display:none"/>
+    </div>
+  </div>
+
+  <!-- Çizim Alanı -->
+<div id="stageWrap">
+  <div id="stage"></div>
+
+  <!-- Bean’den JSON (STRING) basılıyor, escape=false çok önemli! -->
+  <script id="cizim-data" type="application/json">
+    <h:outputText value="#{semaCizimBean.cizimNesnesi}" escape="false" />
+  </script>
+</div>
+
+<h:outputScript library="js" name="sld.dynamic.js" target="body"/>
+
+</h:body>
+</html>
